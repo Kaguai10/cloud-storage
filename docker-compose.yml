@@ -68,7 +68,7 @@ services:
       - backend
     volumes:
       - ./scripts:/scripts
-    command: /scripts/startup-info.sh
+    command: sh -c "chmod +x /scripts/startup-info.sh && /scripts/startup-info.sh"
     networks:
       - cloudnet
 
