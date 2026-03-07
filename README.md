@@ -1,28 +1,62 @@
-# Mini Cloud Storage 2.0
+<div align="center">
+  <img src="https://readme-typing-svg.herokuapp.com?size=30&color=ff2400&center=true&vCenter=true&width=650&lines=☁️+Mini+Cloud+Storage">
+</div>
 
-A full-stack cloud storage application built with Flask, PostgreSQL, and MinIO.
+A full-stack cloud storage application built with Flask, PostgreSQL, and MinIO. Store, share, and manage your files securely in the cloud.
 
-## Features
+![Python](https://img.shields.io/badge/Python-3.11-blue.svg)
+![Flask](https://img.shields.io/badge/Flask-2.3-green.svg)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-blue.svg)
+![MinIO](https://img.shields.io/badge/MinIO-Latest-red.svg)
+![License](https://img.shields.io/badge/License-MIT-yellow.svg)
 
-### User Features
-- **Registration & Login** - With image-based captcha verification
-- **Profile Management** - Update username, email, password, and profile photo
-- **File Upload** - Drag & drop, camera, or browse upload with metadata (name, category, visibility)
-- **File Management** - Create, read, update, delete files with visibility control:
+## ✨ Features
+
+### 👤 User Features
+
+- **🔐 Authentication & Security**
+  - Registration with image-based captcha
+  - Secure login with JWT tokens
+  - Password strength validation
+  - Show/hide password toggle
+
+- **📁 File Management**
+  - Upload files via drag & drop, camera, or browse
+  - Add metadata: filename, category, visibility
+  - Edit file details
+  - Delete files
+  - Download files with tracking
+
+- **👁️ File Visibility Control**
   - **Public** - Visible and downloadable by everyone
   - **Private** - Only visible to owner
-  - **Semi-Public** - Only visible to users you share with
-- **Search** - Search files by name or category
-- **Download** - Download files with tracking
+  - **Semi-Public** - Share with specific users
 
-### Admin Features
-- **Dashboard** - Statistics and overview
-- **User Management** - Full CRUD operations on users
-- **File Management** - Delete any file
-- **Activity Logs** - Comprehensive logging for debugging
-- **Monitoring** - Track user activity and system usage
+- **🔍 Search & Filter**
+  - Search by filename
+  - Filter by category (Personal, Work, Family, Travel, Nature, Art, Other)
+  - Combined search + category filter
 
-## Architecture
+- **📤 File Sharing**
+  - Share files with other users
+  - Shareable links with tokens
+  - View files shared with you
+  - Real-time notifications
+
+- **👤 Profile Management**
+  - Update username and email
+  - Change password
+  - Upload/update profile photo (avatar)
+  - View account statistics
+
+### 👨‍💼 Admin Features
+
+- **📊 Dashboard** - User and file statistics, recent activity, top users
+- **👥 User Management** - Full CRUD operations on users
+- **📁 File Management** - View and delete any public file
+- **📋 Activity Logs** - Comprehensive logging with filters
+
+## 🏗️ Architecture
 
 ```
 ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
@@ -39,181 +73,241 @@ A full-stack cloud storage application built with Flask, PostgreSQL, and MinIO.
              └────────────┘          └────────────┘          └────────────┘
 ```
 
-## Tech Stack
+## 🛠️ Tech Stack
 
-- **Frontend**: Flask + Bootstrap 5
-- **Backend**: Flask (API Proxy)
-- **API**: Flask REST API
-- **Database**: PostgreSQL 15
-- **Object Storage**: MinIO
-- **Authentication**: JWT
-- **Password Hashing**: bcrypt
-- **Captcha**: Custom image-based captcha with PIL
+| Layer | Technology |
+|-------|-----------|
+| **Frontend** | Flask + Jinja2 + Bootstrap 5 |
+| **Backend** | Flask (API Proxy) |
+| **API** | Flask REST API |
+| **Database** | PostgreSQL 15 |
+| **Object Storage** | MinIO |
+| **Authentication** | JWT (PyJWT) |
+| **Password Hashing** | bcrypt |
+| **ORM** | SQLAlchemy |
+| **Captcha** | Custom image-based (PIL) |
+| **Containerization** | Docker + Docker Compose |
 
-## Quick Start
+## 🚀 Quick Start
 
 ### Prerequisites
+
 - Docker & Docker Compose
 - Git
 
 ### Installation
 
-1. **Clone the repository**
+#### 1. Clone the Repository
+
 ```bash
 git clone https://github.com/kaguai10/cloud-storage2.git
 cd cloud-storage2
 ```
 
-2. **Configure environment variables**
+#### 2. Configure Environment Variables
+
 ```bash
 cp .env.example .env
 # Edit .env with your settings
 ```
 
-3. **Start all services**
-
-**Important**: MinIO requires the password to be at least 8 characters. If you get MinIO errors, export the environment variables first:
+#### 3. Start All Services
 
 ```bash
-export MINIO_ROOT_USER=adminminio
-export MINIO_ROOT_PASSWORD=MinioSecret2026!
 docker-compose up -d
 ```
 
-4. **Access the application**
-- **Frontend**: http://localhost:5000
-- **Backend**: http://localhost:5001
-- **API**: http://localhost:8080
-- **MinIO Console**: http://localhost:9001 (adminminio / MinioSecret2026!)
+#### 4. Access the Application
 
-### Default Admin Account
-- **Username**: `admin`
-- **Password**: `admin123`
+| Service | PORT | Credentials |
+|---------|-----|-------------|
+| **Frontend** | 5000 | - |
+| **Backend** | 5001 | - |
+| **API** | 8080 | - |
+| **MinIO Console** | 9001 | `adminminio` / `MinioSecret2026!` |
+| **PostgreSQL** | 5432 | `clouduserdb` / `cloudpassdb_secure2026` |
+| **Admin Panel** | 5000/admin | `admin` / `admin123` |
 
-> ⚠️ **IMPORTANT**: Change the default admin password immediately after first login!
+> ⚠️ **SECURITY**: Change the default admin password immediately after first login!
 
-### Stop services
+### PostgreSQL Connection
+
+**Connect via Docker:**
 ```bash
-docker-compose down
+docker exec -it cloud-storage2-postgres-1 psql -U clouduserdb -d clouddb
 ```
 
-### Stop and remove volumes
+**Connect from Host:**
 ```bash
+psql -h localhost -p 5432 -U clouduserdb -d clouddb
+```
+
+**Connection String:**
+```
+postgresql://clouduserdb:cloudpassdb_secure2026@localhost:5432/clouddb
+```
+
+### Stop Services
+
+```bash
+# Stop containers
+docker-compose down
+
+# Stop and remove volumes (⚠️ DELETES ALL DATA)
 docker-compose down -v
 ```
 
-## Project Structure
+## 📂 Project Structure
 
 ```
 cloud-storage2/
-├── api/                    # REST API service
-│   ├── app.py             # Main application
-│   ├── config.py          # Configuration
-│   ├── models.py          # SQLAlchemy models
-│   ├── database.py        # Database setup
-│   ├── health.py          # Health check endpoint
-│   ├── requirements.txt   # Python dependencies
+├── api/                        # REST API service
+│   ├── app.py                 # Main application factory
+│   ├── config.py              # Configuration settings
+│   ├── models.py              # SQLAlchemy models
+│   ├── database.py            # Database connection
+│   ├── health.py              # Health check endpoint
+│   ├── requirements.txt       # Python dependencies
 │   ├── Dockerfile
-│   ├── routes/            # API routes
-│   │   ├── auth.py        # Authentication routes
-│   │   ├── users.py       # User management routes
-│   │   ├── admin.py       # Admin routes
-│   │   ├── files.py       # File management routes
-│   │   └── search.py      # Search routes
-│   ├── services/          # Business logic
-│   │   ├── auth_service.py
-│   │   └── storage.py
-│   └── utils/             # Utilities
-│       ├── captcha.py
-│       ├── validator.py
-│       ├── logger.py
-│       └── crypto.py
-├── backend/               # Backend proxy service
-│   ├── app.py
+│   ├── wait-for-db.sh         # PostgreSQL wait script
+│   ├── routes/                # API route handlers
+│   │   ├── auth.py            # Authentication
+│   │   ├── users.py           # User management
+│   │   ├── admin.py           # Admin operations
+│   │   ├── files.py           # File CRUD
+│   │   └── search.py          # Search functionality
+│   ├── services/              # Business logic
+│   │   ├── auth_service.py    # JWT, password hashing
+│   │   ├── storage.py         # MinIO operations
+│   │   └── minio_init.py      # MinIO initialization
+│   └── utils/                 # Utilities
+│       ├── captcha.py         # Captcha generation
+│       ├── validator.py       # Input validation
+│       ├── logger.py          # Logging setup
+│       └── crypto.py          # Encryption utilities
+│
+├── backend/                   # Backend proxy service
+│   ├── app.py                 # Proxy to API
 │   ├── requirements.txt
 │   └── Dockerfile
-├── frontend/              # Frontend web service
-│   ├── app.py
+│
+├── frontend/                  # Frontend web service
+│   ├── app.py                 # Flask web app
 │   ├── requirements.txt
 │   ├── Dockerfile
-│   └── templates/         # Jinja2 templates
-│       ├── base.html
-│       ├── home.html
-│       ├── login.html
-│       ├── register.html
-│       ├── settings.html
-│       ├── upload.html
-│       ├── search.html
-│       ├── my_files.html
-│       ├── file_*.html
-│       └── admin/
-├── docker-compose.yml
-└── .env
+│   └── templates/             # Jinja2 templates
+│       ├── base.html          # Base template
+│       ├── home.html          # Public files
+│       ├── login.html         # Login page
+│       ├── register.html      # Registration
+│       ├── settings.html      # User settings
+│       ├── upload.html        # File upload
+│       ├── search.html        # Search page
+│       ├── my_files.html      # User's files
+│       ├── shared_with_me.html # Shared files
+│       ├── shared_file.html   # Single shared file
+│       ├── file_detail.html   # File details
+│       ├── file_edit.html     # Edit file
+│       ├── file_share.html    # Share file
+│       └── admin/             # Admin templates
+│
+├── scripts/                   # Utility scripts
+│   └── startup-info.sh        # Startup information
+│
+├── docker-compose.yml         # Docker orchestration
+├── .env                       # Environment variables
+├── .env.example              # Environment template
+├── .gitignore                # Git ignore rules
+└── README.md                 # Documentation
 ```
 
-## API Endpoints
+## 📡 API Endpoints
 
 ### Authentication
-- `GET /api/auth/captcha` - Get captcha image
-- `POST /api/auth/register` - Register new user
-- `POST /api/auth/login` - User login
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/auth/captcha` | Get captcha image |
+| `POST` | `/api/auth/register` | Register new user |
+| `POST` | `/api/auth/login` | User login |
 
 ### Users
-- `GET /api/users/me` - Get current user
-- `PUT /api/users/me` - Update profile
-- `PUT /api/users/me/password` - Change password
-- `PUT /api/users/me/photo` - Update profile photo
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/users/me` | Get current user |
+| `PUT` | `/api/users/me` | Update profile |
+| `PUT` | `/api/users/me/password` | Change password |
+| `PUT` | `/api/users/me/photo` | Update profile photo |
+| `DELETE` | `/api/users/me/photo` | Delete profile photo |
 
 ### Files
-- `POST /api/files/upload` - Upload file
-- `GET /api/files/my-files` - Get user's files
-- `GET /api/files/<id>` - Get file details
-- `PUT /api/files/<id>` - Update file
-- `DELETE /api/files/<id>` - Delete file
-- `GET /api/files/<id>/download` - Download file
-- `POST /api/files/<id>/share` - Share file
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/files/upload` | Upload file |
+| `GET` | `/api/files/my-files` | Get user's files |
+| `GET` | `/api/files/shared-with-me` | Get shared files |
+| `GET` | `/api/files/<id>` | Get file details |
+| `PUT` | `/api/files/<id>` | Update file |
+| `DELETE` | `/api/files/<id>` | Delete file |
+| `GET` | `/api/files/<id>/download` | Download file |
+| `POST` | `/api/files/<id>/share` | Share file |
+| `GET` | `/api/files/image/<path>` | Serve image |
+| `GET` | `/api/files/shared/<token>` | Get shared file |
+| `GET` | `/api/files/shared/<token>/download` | Download shared file |
 
 ### Search
-- `GET /api/search` - Search files (auth required)
-- `GET /api/search/public` - Search public files
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/search` | Search files |
+| `GET` | `/api/search/public` | Search public files |
+
+### Notifications
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/files/notifications` | Get notifications |
+| `POST` | `/api/files/notifications/mark-read` | Mark all as read |
 
 ### Admin
-- `GET /api/admin/dashboard` - Dashboard stats
-- `GET /api/admin/users` - List all users
-- `DELETE /api/admin/users/<id>` - Delete user
-- `GET /api/admin/logs` - Activity logs
-- `GET /api/admin/files` - List all files
-- `DELETE /api/admin/files/<id>` - Delete any file
 
-## Environment Variables
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/admin/dashboard` | Dashboard statistics |
+| `GET` | `/api/admin/users` | List all users |
+| `GET` | `/api/admin/users/<id>` | Get user details |
+| `PUT` | `/api/admin/users/<id>` | Update user |
+| `DELETE` | `/api/admin/users/<id>` | Delete user |
+| `POST` | `/api/admin/users/<id>/reset-password` | Reset user password |
+| `GET` | `/api/admin/files` | List all public files |
+| `DELETE` | `/api/admin/files/<id>` | Delete any file |
+| `GET` | `/api/admin/logs` | Activity logs |
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `FLASK_ENV` | Flask environment | `development` |
-| `SECRET_KEY` | Flask secret key | (required) |
-| `JWT_SECRET` | JWT signing secret | (required) |
-| `POSTGRES_USER` | Database user | `clouduserdb` |
-| `POSTGRES_PASSWORD` | Database password | (required) |
-| `POSTGRES_DB` | Database name | `clouddb` |
-| `POSTGRES_HOST` | Database host | `db` |
-| `MINIO_ROOT_USER` | MinIO admin user | `adminminio` |
-| `MINIO_ROOT_PASSWORD` | MinIO admin password | (required) |
-| `MINIO_ENDPOINT` | MinIO endpoint | `minio:9000` |
-| `MINIO_BUCKET` | MinIO bucket name | `cloud-storage` |
-| `MAX_UPLOAD_SIZE` | Max file size (bytes) | `52428800` (50MB) |
-| `LOG_LEVEL` | Logging level | `INFO` |
+## 🔒 Security Best Practices
 
-## Security Notes
+1. **Change Default Passwords**
+   - Admin: `admin` / `admin123`
+   - MinIO: Set strong password in `.env`
+   - Database: Use strong password
 
-1. Change default passwords in `.env` before production
-2. Use HTTPS in production
-3. Keep `SECRET_KEY` and `JWT_SECRET` secure
-4. Regularly backup PostgreSQL data and MinIO storage
+2. **Production Deployment**
+   - Use HTTPS
+   - Set strong `SECRET_KEY` and `JWT_SECRET`
+   - Disable debug mode
+   - Use secrets manager for environment variables
 
-## License
+3. **Data Protection**
+   - Regular backups of PostgreSQL data
+   - Backup MinIO storage volumes
+   - Keep `.env` file secure (never commit to Git)
 
-MIT License
+4. **File Upload Security**
+   - File type validation
+   - File size limits (default 50MB)
+   - Sanitized filenames
 
-## Author
+## 📄 License
 
-kaguai10
+MIT License.
