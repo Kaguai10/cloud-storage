@@ -117,7 +117,7 @@ cp .env.example .env
 #### 3. Start All Services
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 #### 4. Access the Application
