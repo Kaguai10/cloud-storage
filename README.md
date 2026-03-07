@@ -1,8 +1,7 @@
 <div align="center">
-  <img src="https://readme-typing-svg.herokuapp.com?size=30&color=ff2400&center=true&vCenter=true&width=650&lines=☁️+Mini+Cloud+Storage">
+  <img src="https://readme-typing-svg.herokuapp.com?size=30&color=ADD8E6&center=true&vCenter=true&width=650&lines=☁️+Mini+Cloud+Storage">
 </div>
-
-A full-stack cloud storage application built with Flask, PostgreSQL, and MinIO. Store, share, and manage your files securely in the cloud.
+<div align="center">
 
 ![Python](https://img.shields.io/badge/Python-3.11-blue.svg)
 ![Flask](https://img.shields.io/badge/Flask-2.3-green.svg)
@@ -10,7 +9,11 @@ A full-stack cloud storage application built with Flask, PostgreSQL, and MinIO. 
 ![MinIO](https://img.shields.io/badge/MinIO-Latest-red.svg)
 ![License](https://img.shields.io/badge/License-MIT-yellow.svg)
 
+</div>
+
 ## ✨ Features
+
+<p>A full-stack cloud storage application built with Flask, PostgreSQL, and MinIO. Store, share, and manage your files securely in the cloud.</p>
 
 ### 👤 User Features
 
