@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block title %}User Details{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-person"></i> User Details</h2>
+    <a href="{{ url_for('admin_users') }}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Back
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-person-circle"></i> Profile
+            </div>
+            <div class="card-body text-center">
+                {% if user.profile_photo %}
+                <img src="{{ user.profile_photo }}" class="rounded-circle mb-3" 
+                     style="width: 150px; height: 150px; object-fit: cover;" alt="">
+                {% else %}
+                <div class="rounded-circle bg-secondary d-inline-flex align-items-center justify-content-center mb-3"
+                     style="width: 150px; height: 150px;">
+                    <i class="bi bi-person text-white" style="font-size: 5rem;"></i>
+                </div>
+                {% endif %}
+                <h4>{{ user.username }}</h4>
+                <p class="text-muted">{{ user.email }}</p>
+                <p>
+                    {% if user.is_admin %}
+                    <span class="badge bg-danger">Administrator</span>
+                    {% endif %}
+                    {% if user.is_active %}
+                    <span class="badge bg-success">Active</span>
+                    {% else %}
+                    <span class="badge bg-secondary">Inactive</span>
+                    {% endif %}
+                </p>
+                <p><small>Member since: {{ user.created_at[:10] if user.created_at else 'N/A' }}</small></p>
+                <p><small>Last login: {{ user.last_login[:19] if user.last_login else 'Never' }}</small></p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <!-- User Files -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="bi bi-folder"></i> User's Files ({{ files|length }})
+            </div>
+            <div class="card-body">
+                {% if files %}
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>Visibility</th>
+                                <th>Downloads</th>
+                                <th>Uploaded</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for file in files %}
+                            <tr>
+                                <td>{{ file.filename }}</td>
+                                <td>{{ file.category }}</td>
+                                <td>
+                                    {% if file.visibility == 'public' %}
+                                    <span class="badge bg-success">Public</span>
+                                    {% elif file.visibility == 'private' %}
+                                    <span class="badge bg-secondary">Private</span>
+                                    {% else %}
+                                    <span class="badge bg-info">Semi-Public</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ file.download_count }}</td>
+                                <td>{{ file.created_at[:10] if file.created_at else 'N/A' }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted">No files uploaded</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Recent Logs -->
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-clock-history"></i> Recent Activity
+            </div>
+            <div class="card-body">
+                {% if logs %}
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Action</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for log in logs %}
+                            <tr>
+                                <td>{{ log.created_at[:19] if log.created_at else 'N/A' }}</td>
+                                <td>{{ log.action }}</td>
+                                <td>
+                                    {% if log.status == 'success' %}
+                                    <span class="badge bg-success">Success</span>
+                                    {% else %}
+                                    <span class="badge bg-danger">Error</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted">No recent activity</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

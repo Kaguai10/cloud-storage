@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Edit File{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-pencil"></i> Edit File
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="filename" class="form-label">File Name</label>
+                        <input type="text" class="form-control" id="filename" name="filename" 
+                               value="{{ file.filename }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Category</label>
+                        <select class="form-select" id="category" name="category" required>
+                            <option value="personal" {{ 'selected' if file.category == 'personal' }}>Personal</option>
+                            <option value="work" {{ 'selected' if file.category == 'work' }}>Work</option>
+                            <option value="family" {{ 'selected' if file.category == 'family' }}>Family</option>
+                            <option value="travel" {{ 'selected' if file.category == 'travel' }}>Travel</option>
+                            <option value="nature" {{ 'selected' if file.category == 'nature' }}>Nature</option>
+                            <option value="art" {{ 'selected' if file.category == 'art' }}>Art</option>
+                            <option value="other" {{ 'selected' if file.category == 'other' }}>Other</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Visibility</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="visibility" 
+                                   id="visibility_private" value="private"
+                                   {{ 'checked' if file.visibility == 'private' }}>
+                            <label class="form-check-label" for="visibility_private">
+                                <i class="bi bi-lock"></i> Private
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="visibility" 
+                                   id="visibility_public" value="public"
+                                   {{ 'checked' if file.visibility == 'public' }}>
+                            <label class="form-check-label" for="visibility_public">
+                                <i class="bi bi-globe"></i> Public
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="visibility" 
+                                   id="visibility_semipublic" value="semipublic"
+                                   {{ 'checked' if file.visibility == 'semipublic' }}>
+                            <label class="form-check-label" for="visibility_semipublic">
+                                <i class="bi bi-people"></i> Semi-Public
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-lg"></i> Save Changes
+                        </button>
+                        <a href="{{ url_for('view_file', file_id=file.id) }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-lg"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

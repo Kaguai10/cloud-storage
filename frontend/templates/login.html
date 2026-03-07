@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <div class="card shadow">
+            <div class="card-header text-center">
+                <h4><i class="bi bi-box-arrow-in-right"></i> Login</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="username" name="username" required autofocus>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="password" name="password" required>
+                            <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('password', this)">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Captcha -->
+                    <div class="mb-3">
+                        <label class="form-label">Captcha</label>
+                        <div class="d-flex align-items-center gap-2">
+                            <input type="hidden" name="captcha_session_id" id="captcha_session_id" value="{{ captcha_session_id }}">
+                            <img id="captcha_image" src="data:image/png;base64,{{ captcha_image }}" 
+                                 class="captcha-img border rounded" 
+                                 alt="Captcha"
+                                 onclick="refreshCaptcha()">
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="refreshCaptcha()">
+                                <i class="bi bi-arrow-clockwise"></i>
+                            </button>
+                        </div>
+                        <input type="text" class="form-control mt-2" name="captcha_answer" 
+                               placeholder="Enter captcha" required maxlength="10">
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-box-arrow-in-right"></i> Login
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer text-center">
+                <small>Don't have an account? <a href="{{ url_for('register') }}">Register here</a></small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+async function refreshCaptcha() {
+    try {
+        const response = await fetch('{{ backend_url }}/api/auth/captcha');
+        if (response.ok) {
+            const data = await response.json();
+            document.getElementById('captcha_session_id').value = data.session_id;
+            document.getElementById('captcha_image').src = 'data:image/png;base64,' + data.image;
+            document.querySelector('input[name="captcha_answer"]').value = '';
+        } else {
+            console.error('Failed to refresh captcha');
+        }
+    } catch (error) {
+        console.error('Error refreshing captcha:', error);
+    }
+}
+
+function togglePassword(inputId, button) {
+    const input = document.getElementById(inputId);
+    const icon = button.querySelector('i');
+    
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('bi-eye');
+        icon.classList.add('bi-eye-slash');
+    } else {
+        input.type = 'password';
+        icon.classList.remove('bi-eye-slash');
+        icon.classList.add('bi-eye');
+    }
+}
+</script>
+{% endblock %}

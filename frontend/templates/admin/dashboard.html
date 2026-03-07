@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<h2><i class="bi bi-speedometer2"></i> Admin Dashboard</h2>
+
+<!-- Statistics Cards -->
+<div class="row mt-4">
+    <div class="col-md-4">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title">Total Users</h6>
+                        <h2 class="mb-0">{{ stats.total_users }}</h2>
+                        <small>Active: {{ stats.active_users }}</small>
+                    </div>
+                    <i class="bi bi-people display-4 opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title">Total Files</h6>
+                        <h2 class="mb-0">{{ stats.total_files }}</h2>
+                        <small>Public: {{ stats.public_files }}</small>
+                    </div>
+                    <i class="bi bi-folder display-4 opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title">Private Files</h6>
+                        <h2 class="mb-0">{{ stats.private_files }}</h2>
+                        <small>Inactive Users: {{ stats.inactive_users }}</small>
+                    </div>
+                    <i class="bi bi-lock display-4 opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <!-- Recent Activity -->
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-clock-history"></i> Recent Activity
+            </div>
+            <div class="card-body">
+                {% if recent_activity %}
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Action</th>
+                                <th>User</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for log in recent_activity %}
+                            <tr>
+                                <td>{{ log.created_at[:19] if log.created_at else 'N/A' }}</td>
+                                <td>{{ log.action }}</td>
+                                <td>{{ log.user_id or 'System' }}</td>
+                                <td>
+                                    {% if log.status == 'success' %}
+                                    <span class="badge bg-success">Success</span>
+                                    {% else %}
+                                    <span class="badge bg-danger">Error</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <a href="{{ url_for('admin_logs') }}" class="btn btn-sm btn-outline-primary">View All Logs</a>
+                {% else %}
+                <p class="text-muted">No recent activity</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Top Users -->
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-trophy"></i> Top Users by Files
+            </div>
+            <div class="card-body">
+                {% if top_users %}
+                <ul class="list-group list-group-flush">
+                    {% for user in top_users %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ user.username }}
+                        <span class="badge bg-primary rounded-pill">{{ user.file_count }} files</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-muted">No users yet</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-lightning"></i> Quick Actions
+            </div>
+            <div class="card-body">
+                <a href="{{ url_for('admin_users') }}" class="btn btn-outline-primary">
+                    <i class="bi bi-people"></i> Manage Users
+                </a>
+                <a href="{{ url_for('admin_files') }}" class="btn btn-outline-success">
+                    <i class="bi bi-folder"></i> Manage Files
+                </a>
+                <a href="{{ url_for('admin_logs') }}" class="btn btn-outline-info">
+                    <i class="bi bi-journal-text"></i> View Logs
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

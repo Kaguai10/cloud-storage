@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}{{ file.filename }} - File Details{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body text-center">
+                <img src="/api/files/image/{{ file.object_path }}"
+                     class="img-fluid rounded"
+                     alt="{{ file.filename }}"
+                     onerror="this.src='https://via.placeholder.com/600x400?text=No+Preview'; console.error('Failed to load image:', this.src);">
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-info-circle"></i> File Information
+            </div>
+            <div class="card-body">
+                <p><strong>Name:</strong> {{ file.filename }}</p>
+                <p><strong>Original:</strong> {{ file.original_filename }}</p>
+                <p><strong>Category:</strong> {{ file.category }}</p>
+                <p><strong>Size:</strong> {{ (file.file_size / 1024 / 1024) | round(2) }} MB</p>
+                <p><strong>Type:</strong> {{ file.mime_type }}</p>
+                <p><strong>Downloads:</strong> {{ file.download_count }}</p>
+                <p><strong>Visibility:</strong>
+                    {% if file.visibility == 'public' %}
+                    <span class="badge bg-success"><i class="bi bi-globe"></i> Public</span>
+                    {% elif file.visibility == 'private' %}
+                    <span class="badge bg-secondary"><i class="bi bi-lock"></i> Private</span>
+                    {% else %}
+                    <span class="badge bg-info"><i class="bi bi-people"></i> Semi-Public</span>
+                    {% endif %}
+                </p>
+                <p><strong>Uploaded:</strong> {{ file.created_at[:19] if file.created_at else 'N/A' }}</p>
+                
+                {% if file.visibility == 'semipublic' and file.share_token %}
+                <hr>
+                <p><strong>Share Link:</strong></p>
+                <div class="input-group input-group-sm">
+                    <input type="text" class="form-control" id="shareLink" 
+                           value="{{ url_for('get_shared_file', share_token=file.share_token, _external=True) }}" readonly>
+                    <button class="btn btn-outline-secondary" type="button" onclick="copyShareLink()">
+                        <i class="bi bi-clipboard"></i>
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+            <div class="card-footer">
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('download_file', file_id=file.id) }}" class="btn btn-success">
+                        <i class="bi bi-download"></i> Download
+                    </a>
+                    <a href="{{ url_for('edit_file', file_id=file.id) }}" class="btn btn-warning">
+                        <i class="bi bi-pencil"></i> Edit
+                    </a>
+                    {% if file.visibility == 'semipublic' %}
+                    <a href="{{ url_for('share_file', file_id=file.id) }}" class="btn btn-info">
+                        <i class="bi bi-share"></i> Share
+                    </a>
+                    {% endif %}
+                    <a href="{{ url_for('my_files') }}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Back to Files
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function copyShareLink() {
+    const input = document.getElementById('shareLink');
+    input.select();
+    document.execCommand('copy');
+    alert('Share link copied to clipboard!');
+}
+</script>
+{% endblock %}

@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block title %}Shared with Me{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-people"></i> Shared with Me</h2>
+</div>
+
+<!-- Search Form -->
+<form class="row g-3 mb-4" method="GET">
+    <div class="col-md-6">
+        <input type="text" class="form-control" name="q"
+               value="{{ request.args.get('q', '') }}" placeholder="Search by filename...">
+    </div>
+    <div class="col-md-3">
+        <select class="form-select" name="category">
+            <option value="">All Categories</option>
+            <option value="personal" {{ 'selected' if request.args.get('category') == 'personal' }}>Personal</option>
+            <option value="work" {{ 'selected' if request.args.get('category') == 'work' }}>Work</option>
+            <option value="family" {{ 'selected' if request.args.get('category') == 'family' }}>Family</option>
+            <option value="travel" {{ 'selected' if request.args.get('category') == 'travel' }}>Travel</option>
+            <option value="nature" {{ 'selected' if request.args.get('category') == 'nature' }}>Nature</option>
+            <option value="art" {{ 'selected' if request.args.get('category') == 'art' }}>Art</option>
+            <option value="other" {{ 'selected' if request.args.get('category') == 'other' }}>Other</option>
+        </select>
+    </div>
+    <div class="col-md-3">
+        <button type="submit" class="btn btn-primary w-100">
+            <i class="bi bi-search"></i> Search
+        </button>
+    </div>
+</form>
+
+{% if files %}
+<div class="row">
+    {% for file in files %}
+    <div class="col-md-3 mb-4">
+        <div class="card file-card h-100">
+            <img src="/api/files/image/{{ file.object_path }}?t={{ file.updated_at[:19] if file.updated_at else file.created_at[:19] }}"
+                 class="file-preview card-img-top"
+                 alt="{{ file.filename }}"
+                 onerror="this.src='https://via.placeholder.com/300x200?text=No+Preview'; console.error('Failed to load image:', this.src);">
+            <div class="card-body">
+                <h6 class="card-title text-truncate" title="{{ file.filename }}">{{ file.filename }}</h6>
+                <p class="card-text small text-muted">
+                    <i class="bi bi-folder"></i> {{ file.category }}<br>
+                    <i class="bi bi-person"></i> Owner: {{ file.owner.username if file.owner else 'Unknown' }}<br>
+                    <i class="bi bi-download"></i> {{ file.download_count }} downloads
+                </p>
+                <div class="btn-group btn-group-sm w-100">
+                    {% if file.mime_type.startswith('image/') %}
+                    <button class="btn btn-outline-primary" onclick="openZoom('/api/files/image/{{ file.object_path }}')">
+                        <i class="bi bi-eye"></i> Preview
+                    </button>
+                    {% else %}
+                    <a href="{{ url_for('view_file', file_id=file.id) }}" class="btn btn-outline-primary">
+                        <i class="bi bi-eye"></i>
+                    </a>
+                    {% endif %}
+                    <a href="{{ url_for('download_file', file_id=file.id) }}" class="btn btn-outline-success" download>
+                        <i class="bi bi-download"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="card-footer bg-white">
+                <small class="text-muted">Shared: {{ file.created_at[:10] if file.created_at else 'N/A' }}</small>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Pagination -->
+{% if pagination.pages > 1 %}
+<nav>
+    <ul class="pagination justify-content-center">
+        <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+            <a class="page-link" href="{{ url_for('shared_with_me', page=pagination.page - 1) }}">Previous</a>
+        </li>
+        <li class="page-item disabled">
+            <span class="page-link">Page {{ pagination.page }} of {{ pagination.pages }}</span>
+        </li>
+        <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+            <a class="page-link" href="{{ url_for('shared_with_me', page=pagination.page + 1) }}">Next</a>
+        </li>
+    </ul>
+</nav>
+{% endif %}
+
+<!-- Zoom Modal -->
+<div class="modal fade" id="zoomModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Image Preview</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="zoomImage" src="" class="img-fluid" alt="Preview">
+            </div>
+        </div>
+    </div>
+</div>
+
+{% else %}
+<div class="text-center py-5">
+    <i class="bi bi-inbox display-1 text-muted"></i>
+    <h4 class="mt-3">No shared files yet</h4>
+    <p class="text-muted">Files shared with you by other users will appear here</p>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function openZoom(imageSrc) {
+    document.getElementById("zoomImage").src = imageSrc;
+    const modal = new bootstrap.Modal(document.getElementById("zoomModal"));
+    modal.show();
+}
+</script>
+{% endblock %}

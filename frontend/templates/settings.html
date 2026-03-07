@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{% block title %}Settings{% endblock %}
+
+{% block content %}
+<h2><i class="bi bi-gear"></i> Settings</h2>
+
+<div class="row mt-4">
+    <!-- Profile Settings -->
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="bi bi-person"></i> Profile Information
+            </div>
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="action" value="update_profile">
+                    
+                    <div class="mb-3 text-center">
+                        {% if session.get('user', {}).get('profile_photo') %}
+                        <img src="{{ session.get('user', {}).get('profile_photo') }}" 
+                             class="rounded-circle mb-2" 
+                             style="width: 100px; height: 100px; object-fit: cover;"
+                             alt="Profile Photo">
+                        {% else %}
+                        <div class="rounded-circle bg-secondary d-inline-flex align-items-center justify-content-center mb-2"
+                             style="width: 100px; height: 100px;">
+                            <i class="bi bi-person text-white" style="font-size: 3rem;"></i>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="username" name="username" 
+                               value="{{ session.get('username', '') }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" 
+                               value="{{ session.get('user', {}).get('email', '') }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="profile_photo" class="form-label">Update Profile Photo</label>
+                        <input type="file" class="form-control" id="profile_photo" name="profile_photo" 
+                               accept="image/*">
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-lg"></i> Save Changes
+                        </button>
+                        {% if session.get('user', {}).get('profile_photo') %}
+                        <button type="submit" name="action" value="delete_photo" class="btn btn-outline-danger">
+                            <i class="bi bi-trash"></i> Delete Photo
+                        </button>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Password Change -->
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="bi bi-key"></i> Change Password
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <input type="hidden" name="action" value="change_password">
+                    
+                    <div class="mb-3">
+                        <label for="current_password" class="form-label">Current Password</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="current_password"
+                                   name="current_password" required>
+                            <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('current_password', this)">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="new_password" class="form-label">New Password</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="new_password"
+                                   name="new_password" required minlength="6">
+                            <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('new_password', this)">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirm_password" class="form-label">Confirm New Password</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="confirm_password"
+                                   name="confirm_password" required minlength="6">
+                            <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('confirm_password', this)">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-key"></i> Change Password
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Account Info -->
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-info-circle"></i> Account Information
+            </div>
+            <div class="card-body">
+                <p><strong>Member since:</strong> {{ session.get('user', {}).get('created_at', 'N/A')[:10] if session.get('user', {}).get('created_at') else 'N/A' }}</p>
+                <p><strong>Last login:</strong> {{ session.get('user', {}).get('last_login', 'N/A')[:19] if session.get('user', {}).get('last_login') else 'N/A' }}</p>
+                {% if session.get('is_admin') %}
+                <span class="badge bg-danger">Administrator</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function togglePassword(inputId, button) {
+    const input = document.getElementById(inputId);
+    const icon = button.querySelector('i');
+    
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('bi-eye');
+        icon.classList.add('bi-eye-slash');
+    } else {
+        input.type = 'password';
+        icon.classList.remove('bi-eye-slash');
+        icon.classList.add('bi-eye');
+    }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Mini Cloud Storage</title>
+</head>
+
+<body>
+
+<h2>Create User</h2>
+
+<form method="POST" action="/upload" enctype="multipart/form-data">
+
+<input name="name" placeholder="name" required>
+
+<input name="email" placeholder="email" required>
+
+<input type="file" name="photo">
+
+<button type="submit">Upload</button>
+
+</form>
+
+<hr>
+
+<h2>User List</h2>
+
+{% for u in users %}
+
+<p>
+{{u.name}} - {{u.email}} - {{u.photo}}
+</p>
+
+{% endfor %}
+
+</body>
+</html>

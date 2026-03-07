@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block title %}Search Files{% endblock %}
+
+{% block content %}
+<h2><i class="bi bi-search"></i> Search Files</h2>
+
+<!-- Search Form -->
+<form class="row g-3 mt-3" method="GET">
+    <div class="col-md-6">
+        <input type="text" class="form-control form-control-lg" name="q"
+               value="{{ query }}" placeholder="Search by filename...">
+    </div>
+    <div class="col-md-3">
+        <select class="form-select form-select-lg" name="category">
+            <option value="">All Categories</option>
+            <option value="personal" {{ 'selected' if request.args.get('category') == 'personal' }}>Personal</option>
+            <option value="work" {{ 'selected' if request.args.get('category') == 'work' }}>Work</option>
+            <option value="family" {{ 'selected' if request.args.get('category') == 'family' }}>Family</option>
+            <option value="travel" {{ 'selected' if request.args.get('category') == 'travel' }}>Travel</option>
+            <option value="nature" {{ 'selected' if request.args.get('category') == 'nature' }}>Nature</option>
+            <option value="art" {{ 'selected' if request.args.get('category') == 'art' }}>Art</option>
+            <option value="other" {{ 'selected' if request.args.get('category') == 'other' }}>Other</option>
+        </select>
+    </div>
+    <div class="col-md-3">
+        <button type="submit" class="btn btn-primary btn-lg w-100">
+            <i class="bi bi-search"></i> Search
+        </button>
+    </div>
+</form>
+
+<!-- Results -->
+{% if query or request.args.get('category') %}
+<h5 class="mt-4">
+    {% if query and request.args.get('category') %}
+        Results for "{{ query }}" in category "{{ request.args.get('category') }}"
+    {% elif query %}
+        Results for "{{ query }}"
+    {% else %}
+        Results for category "{{ request.args.get('category') }}"
+    {% endif %}
+</h5>
+
+{% if files %}
+<div class="row mt-4">
+    {% for file in files %}
+    <div class="col-md-3 mb-4">
+        <div class="card file-card h-100">
+            <img src="/api/files/image/{{ file.object_path }}?t={{ file.updated_at[:19] if file.updated_at else '' }}"
+                 class="file-preview card-img-top"
+                 alt="{{ file.filename }}"
+                 onerror="this.src='https://via.placeholder.com/300x200?text=No+Preview'">
+            <div class="card-body">
+                <h6 class="card-title text-truncate" title="{{ file.filename }}">{{ file.filename }}</h6>
+                <p class="card-text small text-muted">
+                    <i class="bi bi-folder"></i> {{ file.category }}<br>
+                    <i class="bi bi-person"></i> {{ file.owner.username if file.owner else 'Unknown' }}<br>
+                    <i class="bi bi-download"></i> {{ file.download_count }} downloads
+                </p>
+                <div class="mb-2">
+                    {% if file.visibility == 'public' %}
+                    <span class="badge bg-success visibility-badge"><i class="bi bi-globe"></i> Public</span>
+                    {% elif file.visibility == 'private' %}
+                    <span class="badge bg-secondary visibility-badge"><i class="bi bi-lock"></i> Private</span>
+                    {% else %}
+                    <span class="badge bg-info visibility-badge"><i class="bi bi-people"></i> Semi-Public</span>
+                    {% endif %}
+                </div>
+                <div class="btn-group btn-group-sm w-100">
+                    {% if file.mime_type.startswith('image/') %}
+                    <button class="btn btn-outline-primary" onclick="openZoom('/api/files/image/{{ file.object_path }}')">
+                        <i class="bi bi-eye"></i>
+                    </button>
+                    {% else %}
+                    <a href="{{ url_for('view_file', file_id=file.id) }}" class="btn btn-outline-primary">
+                        <i class="bi bi-eye"></i>
+                    </a>
+                    {% endif %}
+                    <a href="{{ url_for('download_file', file_id=file.id) }}" class="btn btn-outline-success" download>
+                        <i class="bi bi-download"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Pagination -->
+{% if pagination.pages > 1 %}
+<nav>
+    <ul class="pagination justify-content-center">
+        <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+            <a class="page-link" href="{{ url_for('search', page=pagination.page - 1, q=query, category=request.args.get('category')) }}">Previous</a>
+        </li>
+        <li class="page-item disabled">
+            <span class="page-link">Page {{ pagination.page }} of {{ pagination.pages }}</span>
+        </li>
+        <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+            <a class="page-link" href="{{ url_for('search', page=pagination.page + 1, q=query, category=request.args.get('category')) }}">Next</a>
+        </li>
+    </ul>
+</nav>
+{% endif %}
+
+{% else %}
+<div class="text-center py-5">
+    <i class="bi bi-search display-1 text-muted"></i>
+    <h4 class="mt-3">No files found</h4>
+    <p class="text-muted">Try a different search term</p>
+</div>
+{% endif %}
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<!-- Zoom Modal -->
+<div class="modal fade" id="zoomModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Image Preview</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="zoomImage" src="" class="img-fluid" alt="Preview">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function openZoom(imageSrc) {
+    document.getElementById("zoomImage").src = imageSrc;
+    const modal = new bootstrap.Modal(document.getElementById("zoomModal"));
+    modal.show();
+}
+</script>
+{% endblock %}

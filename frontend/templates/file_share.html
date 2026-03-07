@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Share File{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-share"></i> Share File
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i> 
+                    Share this file with another user by entering their username.
+                </div>
+                
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username to share with</label>
+                        <input type="text" class="form-control" id="username" name="username" 
+                               required placeholder="Enter username">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Current File</label>
+                        <p class="text-muted">{{ file.filename }}</p>
+                    </div>
+                    
+                    {% if file.visibility != 'semipublic' %}
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        This file is not set to Semi-Public. Please edit the file and change visibility to Semi-Public first.
+                    </div>
+                    {% endif %}
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary" {{ 'disabled' if file.visibility != 'semipublic' }}>
+                            <i class="bi bi-share"></i> Share
+                        </button>
+                        <a href="{{ url_for('view_file', file_id=file.id) }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-lg"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

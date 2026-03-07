@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-header text-center">
+                <h4><i class="bi bi-person-plus"></i> Register</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username *</label>
+                        <input type="text" class="form-control" id="username" name="username" required 
+                               pattern="[a-zA-Z][a-zA-Z0-9_]{2,29}" 
+                               title="Username must start with a letter, 3-30 chars, letters/numbers/underscores only">
+                        <small class="text-muted">Starts with letter, 3-30 characters, letters/numbers/underscores only</small>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email *</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="profile_photo" class="form-label">Profile Photo (optional)</label>
+                        <input type="file" class="form-control" id="profile_photo" name="profile_photo" 
+                               accept="image/*">
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password *</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="password" name="password"
+                                   required minlength="6">
+                            <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('password', this)">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                        <small class="text-muted">Minimum 6 characters</small>
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirm_password" class="form-label">Confirm Password *</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="confirm_password"
+                                   name="confirm_password" required minlength="6">
+                            <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('confirm_password', this)">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Captcha -->
+                    <div class="mb-3">
+                        <label class="form-label">Captcha *</label>
+                        <div class="d-flex align-items-center gap-2">
+                            <input type="hidden" name="captcha_session_id" id="captcha_session_id" value="{{ captcha_session_id }}">
+                            <img id="captcha_image" src="data:image/png;base64,{{ captcha_image }}" 
+                                 class="captcha-img border rounded" 
+                                 alt="Captcha"
+                                 onclick="refreshCaptcha()">
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="refreshCaptcha()">
+                                <i class="bi bi-arrow-clockwise"></i>
+                            </button>
+                        </div>
+                        <input type="text" class="form-control mt-2" name="captcha_answer" 
+                               placeholder="Enter captcha" required maxlength="10">
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-person-plus"></i> Register
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer text-center">
+                <small>Already have an account? <a href="{{ url_for('login') }}">Login here</a></small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+async function refreshCaptcha() {
+    try {
+        const response = await fetch('{{ backend_url }}/api/auth/captcha');
+        if (response.ok) {
+            const data = await response.json();
+            document.getElementById('captcha_session_id').value = data.session_id;
+            document.getElementById('captcha_image').src = 'data:image/png;base64,' + data.image;
+            document.querySelector('input[name="captcha_answer"]').value = '';
+        } else {
+            console.error('Failed to refresh captcha');
+        }
+    } catch (error) {
+        console.error('Error refreshing captcha:', error);
+    }
+}
+
+function togglePassword(inputId, button) {
+    const input = document.getElementById(inputId);
+    const icon = button.querySelector('i');
+    
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('bi-eye');
+        icon.classList.add('bi-eye-slash');
+    } else {
+        input.type = 'password';
+        icon.classList.remove('bi-eye-slash');
+        icon.classList.add('bi-eye');
+    }
+}
+</script>
+{% endblock %}
