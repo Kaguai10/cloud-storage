@@ -104,8 +104,8 @@
 #### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/kaguai10/cloud-storage2.git
-cd cloud-storage2
+git clone https://github.com/kaguai10/cloud-storage.git
+cd cloud-storage
 ```
 
 #### 2. Configure Environment Variables
@@ -138,7 +138,7 @@ docker compose up -d
 
 **Connect via Docker:**
 ```bash
-docker exec -it cloud-storage2-postgres-1 psql -U clouduserdb -d clouddb
+docker exec -it cloud-storage-postgres-1 psql -U clouduserdb -d clouddb
 ```
 
 **Connect from Host:**
@@ -164,7 +164,7 @@ docker-compose down -v
 ## 📂 Project Structure
 
 ```
-cloud-storage2/
+cloud-storage/
 ├── api/                        # REST API service
 │   ├── app.py                 # Main application factory
 │   ├── config.py              # Configuration settings
