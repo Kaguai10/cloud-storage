@@ -2,7 +2,7 @@
   <img src="https://readme-typing-svg.herokuapp.com?size=30&color=ADD8E6&center=true&vCenter=true&width=650&lines=☁️+Mini+Cloud+Storage">
 </div>
 <div align="center">
-  <img src="https://github.com/Kaguai10/cloud-storage/blob/main/images/cloud-storage.png" width="75%">
+  <img src="https://github.com/Kaguai10/cloud-storage/blob/main/demo/cloud-storage.png" width="75%">
 
 ![Python](https://img.shields.io/badge/Python-3.11-blue.svg)
 ![Flask](https://img.shields.io/badge/Flask-2.3-green.svg)
