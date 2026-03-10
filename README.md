@@ -155,10 +155,10 @@ postgresql://clouduserdb:cloudpassdb_secure2026@localhost:5432/clouddb
 
 ```bash
 # Stop containers
-docker-compose down
+docker compose down
 
 # Stop and remove volumes (⚠️ DELETES ALL DATA)
-docker-compose down -v
+docker compose down -v
 ```
 
 ## 📂 Project Structure
@@ -305,7 +305,7 @@ cloud-storage/
 3. **Data Protection**
    - Regular backups of PostgreSQL data
    - Backup MinIO storage volumes
-   - Keep `.env` file secure (never commit to Git)
+   - Keep `.env` file secure
 
 4. **File Upload Security**
    - File type validation
