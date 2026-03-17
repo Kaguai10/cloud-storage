@@ -18,36 +18,36 @@
 
 ### 👤 User Features
 
-- **🔐 Authentication & Security**
+- **Authentication & Security**
   - Registration with image-based captcha
   - Secure login with JWT tokens
   - Password strength validation
   - Show/hide password toggle
 
-- **📁 File Management**
+- **File Management**
   - Upload files via drag & drop, camera, or browse
   - Add metadata: filename, category, visibility
   - Edit file details
   - Delete files
   - Download files with tracking
 
-- **👁️ File Visibility Control**
+- **File Visibility Control**
   - **Public** - Visible and downloadable by everyone
   - **Private** - Only visible to owner
   - **Semi-Public** - Share with specific users
 
-- **🔍 Search & Filter**
+- **Search & Filter**
   - Search by filename
   - Filter by category (Personal, Work, Family, Travel, Nature, Art, Other)
   - Combined search + category filter
 
-- **📤 File Sharing**
+- **File Sharing**
   - Share files with other users
   - Shareable links with tokens
   - View files shared with you
   - Real-time notifications
 
-- **👤 Profile Management**
+- **Profile Management**
   - Update username and email
   - Change password
   - Upload/update profile photo (avatar)
@@ -55,10 +55,10 @@
 
 ### 👨‍💼 Admin Features
 
-- **📊 Dashboard** - User and file statistics, recent activity, top users
-- **👥 User Management** - Full CRUD operations on users
-- **📁 File Management** - View and delete any public file
-- **📋 Activity Logs** - Comprehensive logging with filters
+- **Dashboard** - User and file statistics, recent activity, top users
+- **User Management** - Full CRUD operations on users
+- **File Management** - View and delete any public file
+- **Activity Logs** - Comprehensive logging with filters
 
 ## 🏗️ Architecture
 
@@ -77,7 +77,7 @@
              └────────────┘          └────────────┘          └────────────┘
 ```
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
@@ -225,7 +225,7 @@ cloud-storage/
 └── README.md                 # Documentation
 ```
 
-## 📡 API Endpoints
+## API Endpoints
 
 ### Authentication
 
@@ -289,7 +289,7 @@ cloud-storage/
 | `DELETE` | `/api/admin/files/<id>` | Delete any file |
 | `GET` | `/api/admin/logs` | Activity logs |
 
-## 🔒 Security Best Practices
+## Security Best Practices
 
 1. **Change Default Passwords**
    - Admin: `admin` / `admin123`
@@ -312,6 +312,6 @@ cloud-storage/
    - File size limits (default 5MB)
    - Sanitized filenames
 
-## 📄 License
+## License
 
 MIT License.
